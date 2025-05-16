@@ -15,6 +15,7 @@ ANoteAnchor::ANoteAnchor()
 	PrimaryActorTick.bCanEverTick = true;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootScene"));
 	SphereMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SphereMesh"));
+	SphereMesh->SetWorldScale3D(FVector(0.1f));
 	SphereMesh->SetupAttachment(RootComponent);
 
 	// 스피어 메시 에셋 로드 (엔진 기본 메시 사용)
@@ -55,7 +56,7 @@ void ANoteAnchor::Tick(float DeltaTime)
 		FVector DownVector = -FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Z); // 아래 방향
 
 		// 카메라 앞 300유닛 위치로 이동
-		FVector TargetLocation = CameraLocation + ForwardVector * 600.0f + DownVector * 100.f;
+		FVector TargetLocation = CameraLocation + ForwardVector * 100.0f + DownVector * 50.f;//댐핑 없애야함
 		SetActorLocation(TargetLocation);
 		SetActorRotation(CameraRotation);
 	}
