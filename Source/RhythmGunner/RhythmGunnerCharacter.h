@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "RhythmGunnerCharacter.generated.h"
 
+
+class UWidgetComponent;
+
 UCLASS(config=Game)
 class ARhythmGunnerCharacter : public ACharacter
 {
@@ -18,6 +21,7 @@ class ARhythmGunnerCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
 public:
 	ARhythmGunnerCharacter();
 
@@ -28,6 +32,9 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 
@@ -68,5 +75,21 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+private:
+	/// HP UI TEST
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> HealthBarWidgetClass;
+
+	UPROPERTY(VisibleAnywhere, Category = "UI")
+	UWidgetComponent* HealthBarWidget;
+
+	void ApplyDamage(float Damage);
+
+	float MaxHP = 100.f;
+	float CurrentHP = 100.f;
+
+	float elapsedTime_UI_Test = 0.f;
+	///
 };
 

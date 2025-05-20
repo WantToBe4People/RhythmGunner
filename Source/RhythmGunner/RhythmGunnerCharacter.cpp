@@ -8,6 +8,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include <Components\WidgetComponent.h>
+#include "Blueprint/UserWidget.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ARhythmGunnerCharacter
@@ -45,6 +47,14 @@ ARhythmGunnerCharacter::ARhythmGunnerCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	/// HP 게이지 테슽트
+	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	HealthBarWidget->SetupAttachment(RootComponent);
+	//HealthBarWidget->SetWidgetSpace(EWidgetSpace::World);
+	//HealthBarWidget->SetDrawSize(FVector2D(150.f, 20.f));
+	//HealthBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 100.f)); // 머리 위
+	//HealthBarWidget->SetPivot(FVector2D(0.5f, 0.5f));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -74,8 +84,74 @@ void ARhythmGunnerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ARhythmGunnerCharacter::OnResetVR);
+
 }
 
+/// HP UI TEST
+void ARhythmGunnerCharacter::ApplyDamage(float Damage)
+{
+	if (CurrentHP <= 0.f)
+	{
+		float Percent = 0.f;
+		if (UUserWidget* Widget = HealthBarWidget->GetUserWidgetObject())
+		{
+			FString Command = FString::Printf(TEXT("SetHealthPercent %.3f"), Percent);
+			Widget->CallFunctionByNameWithArguments(*Command, *GLog, nullptr, true);
+		}
+		return;
+	}
+
+	CurrentHP = FMath::Clamp(CurrentHP - Damage, 0.f, MaxHP);
+	float Percent = FMath::Clamp(CurrentHP / MaxHP, 0.f, 1.f);
+
+	if (UUserWidget* Widget = HealthBarWidget->GetUserWidgetObject())
+	{
+		FString Command = FString::Printf(TEXT("SetHealthPercent %.3f"), Percent);
+		Widget->CallFunctionByNameWithArguments(*Command, *GLog, nullptr, true);
+
+		UE_LOG(LogTemp, Warning, TEXT("percent: %f"), Percent);
+	}
+}
+
+void ARhythmGunnerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	/// HP UI TEST
+	if (HealthBarWidgetClass)
+	{
+		HealthBarWidget->SetWidgetClass(HealthBarWidgetClass);
+		HealthBarWidget->InitWidget();
+		HealthBarWidget->SetTwoSided(true);
+
+		float Percent = FMath::Clamp(CurrentHP / MaxHP, 0.f, 1.f);
+
+		if (UUserWidget* Widget = HealthBarWidget->GetUserWidgetObject())
+		{
+			FString Command = FString::Printf(TEXT("SetHealthPercent %.3f"), Percent);
+			Widget->CallFunctionByNameWithArguments(*Command, *GLog, nullptr, true);
+
+			UE_LOG(LogTemp, Warning, TEXT("percent: %f"), Percent);
+		}
+	}
+}
+
+void ARhythmGunnerCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	elapsedTime_UI_Test += DeltaTime;
+	if (elapsedTime_UI_Test >= 5.f)
+	{
+		ApplyDamage(10.f);
+		elapsedTime_UI_Test = 0.f;
+
+		UE_LOG(LogTemp, Warning, TEXT("HP: %f"), CurrentHP);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("tick"));
+	UE_LOG(LogTemp, Warning, TEXT("I am %s ticking"), *GetName());
+}
 
 void ARhythmGunnerCharacter::OnResetVR()
 {
