@@ -84,12 +84,19 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	UWidgetComponent* HealthBarWidget;
 
-	void ApplyDamage(float Damage);
-
 	float MaxHP = 100.f;
 	float CurrentHP = 100.f;
 
+	void UpdateHealthUI();
+
 	float elapsedTime_UI_Test = 0.f;
+
+public:
+	void ApplyDamage(float Damage);
+	void AddHealth(float Amount);
+	void AddPlayerMAXHP(float MaxVal) { MaxHP += MaxVal; }
+	const float GetPlayerCurrentHP() { return CurrentHP; }
+	const float GetPlayerMaxHP() { return MaxHP; }
 	///
 };
 
