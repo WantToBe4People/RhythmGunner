@@ -3,7 +3,6 @@
 
 #include "RhythmSubsystem.h"
 #include "NoteAnchor.h"
-#include "FNote.h"
 #include "Engine/Engine.h"
 #include "Misc/OutputDeviceNull.h"
 
@@ -16,8 +15,7 @@ void URhythmSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		noteAnchor = World->SpawnActor<ANoteAnchor>(ANoteAnchor::StaticClass());
-		
+		World->SpawnActor<ANoteAnchor>(ANoteAnchor::StaticClass());
 	}
 	UE_LOG(LogTemp, Log, TEXT("Subsystem Initialized"));
 }
@@ -31,19 +29,6 @@ void URhythmSubsystem::Deinitialize()
 void URhythmSubsystem::Tick(float DeltaTime)
 {
 	//UE_LOG(LogTemp, Log, TEXT("DT : %f"),DeltaTime);
-	/*
-	for (TDoubleLinkedList<F_Note>::TIterator It(lNotes.GetHead()); It; ++It)
-	{
-		(*It).timing -= DeltaTime;
-	}
-	for (TDoubleLinkedList<F_Note>::TIterator It(rNotes.GetHead()); It; ++It)
-	{
-		(*It).timing -= DeltaTime;
-	}
-	*/
-
-
-
 	if (TickInterval <= 0)
 	{
 		RhythmTick(DeltaTime);
@@ -62,39 +47,8 @@ void URhythmSubsystem::RhythmTick(float DeltaTime)
 {
 	UE_LOG(LogTemp, Log, TEXT("RhythmTick : %d"),t);
 	++t;
-	AFNote* fnote = GetWorld()->SpawnActor<AFNote>(AFNote::StaticClass());
-	fnote->timing = 2.f;
-	fnote->type = 1;
-	FAttachmentTransformRules Rules(EAttachmentRule::KeepRelative, true);
-	fnote->AttachToActor(noteAnchor, Rules);
-	lNotes.AddTail(fnote);
 	RhythmEvent.Broadcast();
-	/*
-	*/
-	
 }
-
-ETimingAcc URhythmSubsystem::CheckNote(ENoteDirc dirc)
-{
-	AFNote* fnote;
-
-	switch (dirc)
-	{
-	case ENoteDirc::Left:
-		fnote = lNotes.GetHead()->GetValue();
-		break;
-
-	case ENoteDirc::Right:
-		fnote = rNotes.GetHead()->GetValue();
-		break;
-
-	default:
-		break;
-	}
-	return ETimingAcc::Good;
-}
-
-
 
 void URhythmSubsystem::PrintTickMessage()
 {
