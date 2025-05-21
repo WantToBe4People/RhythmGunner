@@ -11,5 +11,5 @@ ARhythmGunnerGameMode::ARhythmGunnerGameMode()
 	if (PlayerPawnBPClass.Class != NULL)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
-	}*/
+	}
 }
