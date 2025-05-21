@@ -87,21 +87,13 @@ void ARhythmGunnerCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 }
 
-/// HP UI TEST
-void ARhythmGunnerCharacter::ApplyDamage(float Damage)
+void ARhythmGunnerCharacter::UpdateHealthUI()
 {
 	if (CurrentHP <= 0.f)
 	{
-		float Percent = 0.f;
-		if (UUserWidget* Widget = HealthBarWidget->GetUserWidgetObject())
-		{
-			FString Command = FString::Printf(TEXT("SetHealthPercent %.3f"), Percent);
-			Widget->CallFunctionByNameWithArguments(*Command, *GLog, nullptr, true);
-		}
 		return;
 	}
 
-	CurrentHP = FMath::Clamp(CurrentHP - Damage, 0.f, MaxHP);
 	float Percent = FMath::Clamp(CurrentHP / MaxHP, 0.f, 1.f);
 
 	if (UUserWidget* Widget = HealthBarWidget->GetUserWidgetObject())
@@ -111,6 +103,19 @@ void ARhythmGunnerCharacter::ApplyDamage(float Damage)
 
 		UE_LOG(LogTemp, Warning, TEXT("percent: %f"), Percent);
 	}
+}
+
+/// HP UI TEST
+void ARhythmGunnerCharacter::ApplyDamage(float Damage)
+{
+	CurrentHP = FMath::Clamp(CurrentHP - Damage, 0.f, MaxHP);
+	UpdateHealthUI();
+}
+
+void ARhythmGunnerCharacter::AddHealth(float Amount)
+{
+	CurrentHP = FMath::Clamp(CurrentHP + Amount, 0.f, MaxHP);
+	UpdateHealthUI();
 }
 
 void ARhythmGunnerCharacter::BeginPlay()

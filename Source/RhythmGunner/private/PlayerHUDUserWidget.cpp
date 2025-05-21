@@ -11,7 +11,7 @@ float UPlayerHUDUserWidget::GetPlayerHealthPercent() const
     ARhythmGunnerCharacter* MyChar = Cast<ARhythmGunnerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (MyChar)
     {
-        //return MyChar->CurrentHealth / MyChar->MaxHealth;
+        return MyChar->GetPlayerCurrentHP() / MyChar->GetPlayerMaxHP();
     }
 	return 0.10f;
 }
