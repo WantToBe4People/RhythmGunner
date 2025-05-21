@@ -2,7 +2,7 @@
 
 
 #include "FieldItem_HPAmplifier.h"
-#include "../RhythmGunnerCharacter.h"
+#include "RhythmGunnerCharacter.h"
 
 AFieldItem_HPAmplifier::AFieldItem_HPAmplifier()
 {

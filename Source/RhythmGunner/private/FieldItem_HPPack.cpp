@@ -3,7 +3,7 @@
 
 #include "FieldItem_HPPack.h"
 #include "GameFramework/Character.h"
-#include "../RhythmGunnerCharacter.h"
+#include "RhythmGunnerCharacter.h"
 
 AFieldItem_HPPack::AFieldItem_HPPack()
 {

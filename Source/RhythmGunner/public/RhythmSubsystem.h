@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Tickable.h" // 반드시 포함
-#include "Containers/CircularQueue.h"
+
 #include "RhythmSubsystem.generated.h"
 
 
@@ -27,17 +27,21 @@ rhythmsub->OnRhythm().AddUObject(this, &APlayer::Jump);//서브시스템에 함수 등록,
 
 
 */
-
-USTRUCT()
+/*
+USTRUCT()//구조체말고 액터로 구현해야하나?
 struct F_Note
 {
     GENERATED_BODY()
 
-
+    F_Note(int16 type_, double timing_)
+        :type(type_), timing(timing_)
+    {
+    }
 
     int16 type=0;
-    int16 cor=0;
+    double timing = 0.f;
 };
+*/
 /*
     박자에 따라 노트 생성 탄약이 다 떨어지는 등의 이유로 인해 존재하는 노트를 수정해야하는경우
     이펙트와 함께 노트 파괴하고 다시 생성?
@@ -50,6 +54,22 @@ struct F_Note
     좌표에 child actor로 노트 생성
 */
 
+UENUM(BlueprintType) // 블루프린트에서도 사용 가능하게
+enum class ETimingAcc : uint8
+{
+    Great      UMETA(DisplayName = "Great"),
+    Good     UMETA(DisplayName = "Good"),
+    Bad      UMETA(DisplayName = "Bad"),
+    Miss      UMETA(DisplayName = "Miss")
+};
+
+enum class ENoteDirc : uint8
+{
+    Left      UMETA(DisplayName = "Left"),
+    Right     UMETA(DisplayName = "Right"),
+    Up      UMETA(DisplayName = "Up"),
+    Down      UMETA(DisplayName = "Down")
+};
 
 UCLASS()
 class RHYTHMGUNNER_API URhythmSubsystem : public UGameInstanceSubsystem, public FTickableGameObject
@@ -63,18 +83,27 @@ public:
 
     // Tick interface overrides
     virtual void Tick(float DeltaTime) override;
-    virtual bool IsTickable() const override { return true; }
+    virtual bool IsTickable() const override { return !IsTemplate(); }
     virtual TStatId GetStatId() const override;
+
+    virtual bool IsTickableWhenPaused() const override { return false; }
+    virtual bool IsTickableInEditor() const override { return false; } //  중요
+    virtual UWorld* GetTickableGameObjectWorld() const override { return GWorld; }
+    //Assertion failed: !TickableObjects.Contains(TickableObject) 발생
+    
 
     // 예제용 함수
     void PrintTickMessage();
     void RhythmTick(float DeltaTime);
+    ETimingAcc CheckNote(ENoteDirc dirc);//출력 great, good, bad, miss 입력 좌우
+
+
     DECLARE_EVENT(URhythmSubsystem, FOnRhythm)
     FOnRhythm& OnRhythm() { return RhythmEvent; }
 
 
-    TCircularQueue<F_Note> lNotes{ 6 };//원형큐는 복사초기화 사용 불가
-    TCircularQueue<F_Note> rNotes{ 6 };
+    TDoubleLinkedList<class AFNote*> lNotes;//원형큐는 복사초기화 사용 불가
+    TDoubleLinkedList<class AFNote*> rNotes;
 
     float TickInterval=0.5;
     int16 t = 0;

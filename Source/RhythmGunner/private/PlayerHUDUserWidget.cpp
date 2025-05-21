@@ -2,7 +2,7 @@
 
 
 #include "PlayerHUDUserWidget.h"
-#include "../RhythmGunnerCharacter.h"
+#include "RhythmGunnerCharacter.h"
 #include <Kismet\GameplayStatics.h>
 #include "Components/ProgressBar.h"
 
