@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "RhythmGunnerGameMode.h"
-#include "RhythmGunnerCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 ARhythmGunnerGameMode::ARhythmGunnerGameMode()
