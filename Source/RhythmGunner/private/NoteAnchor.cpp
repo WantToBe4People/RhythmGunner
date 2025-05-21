@@ -28,6 +28,12 @@ ANoteAnchor::ANoteAnchor()
 	// 충돌 비활성화
 	SphereMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SphereMesh->SetGenerateOverlapEvents(false);
+
+	SphereMesh->CastShadow = false;              // 그림자 생성 비활성화
+	SphereMesh->bCastDynamicShadow = false;      // 동적 그림자 비활성화
+	SphereMesh->bCastStaticShadow = false;       // 정적 그림자 비활성화
+
+	SphereMesh->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned
@@ -39,7 +45,7 @@ void ANoteAnchor::BeginPlay()
 	{
 		PlayerCameraManager = PC->PlayerCameraManager;
 	}
-	
+	PrimaryActorTick.TickGroup = TG_PostUpdateWork;//카메라 댐핑 방지
 }
 
 // Called every frame
@@ -56,7 +62,8 @@ void ANoteAnchor::Tick(float DeltaTime)
 		FVector DownVector = -FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Z); // 아래 방향
 
 		// 카메라 앞 300유닛 위치로 이동
-		FVector TargetLocation = CameraLocation + ForwardVector * 100.0f + DownVector * 50.f;//댐핑 없애야함
+		FVector TargetLocation = CameraLocation + ForwardVector * 100.0f + DownVector * 0.f;//댐핑 없애야함
+		//FVector TargetLocation = CameraLocation + ForwardVector * 100.0f;
 		SetActorLocation(TargetLocation);
 		SetActorRotation(CameraRotation);
 	}
