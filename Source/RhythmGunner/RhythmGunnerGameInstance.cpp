@@ -1,3 +1,34 @@
+/**
+ * @brief 게임 저장/로드 시스템
+ * 
+ * 이 게임은 UGameSaveSubsystem을 통해 게임 데이터를 관리합니다.
+ * 주요 기능:
+ * 1. 스테이지 클리어 상태 저장
+ * 2. 게임 진행도 저장
+ * 3. 디버그 기능 (Ctrl + 9)을 통한 스테이지 클리어 테스트
+ * 
+ * 저장 데이터 구조:
+ * - 스테이지별 클리어 상태
+ * - 스테이지별 클리어 시간
+ * 
+ * 디버그 기능:
+ * - Ctrl + 9: 현재 스테이지 클리어
+ * - 모든 스테이지가 클리어된 상태에서 Ctrl + 9: 모든 스테이지 초기화
+ * 
+ * 사용 방법:
+ * 1. 게임 저장하기:
+ *    UGameSaveSubsystem* SaveSubsystem = GetSubsystem<UGameSaveSubsystem>();
+ *    SaveSubsystem->SetStageClear(StageIndex, ClearTime);
+ * 
+ * 2. 게임 로드하기:
+ *    UGameSaveSubsystem* SaveSubsystem = GetSubsystem<UGameSaveSubsystem>();
+ *    bool bIsCleared = SaveSubsystem->IsStageCleared(StageIndex);
+ * 
+ * 3. 모든 데이터 초기화:
+ *    UGameSaveSubsystem* SaveSubsystem = GetSubsystem<UGameSaveSubsystem>();
+ *    SaveSubsystem->SetGameSaveData(NewObject<UGameSaveData>());
+ */
+
 #include "RhythmGunnerGameInstance.h"
 #include "Subsystems/GameSaveSubsystem.h"
 #include "GameFramework/PlayerInput.h"
