@@ -28,9 +28,9 @@ void ARhythmGunnerGameMode::SetupInputBindings()
 {
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 	{
-		// Ctrl + 1: 일시정지/재개
+		// Ctrl + 1: ?�시?��?/?�개
 		PlayerController->InputComponent->BindKey(FKey("One"), EInputEvent::IE_Pressed, this, &ARhythmGunnerGameMode::TogglePause).bExecuteWhenPaused = true;
-		// Ctrl + 2: 레벨 재시작
+		// Ctrl + 2: ?�벨 ?�시??
 		//PlayerController->InputComponent->BindKey(FKey("Two"), EInputEvent::IE_Pressed, this, &ARhythmGunnerGameMode::RestartLevel).bExecuteWhenPaused = true;
 	}
 }
@@ -75,8 +75,8 @@ void ARhythmGunnerGameMode::DisplayShortcutInfo()
 {
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("단축키 안내:"));
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, TEXT("Ctrl + 1: 게임 일시정지/재개"));
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, TEXT("Ctrl + 2: 레벨 재시작 (현재 비활성화)"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("?�축???�내:"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, TEXT("Ctrl + 1: 게임 ?�시?��?/?�개"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, TEXT("Ctrl + 2: ?�벨 ?�시??(?�재 비활?�화)"));
 	}
 }
